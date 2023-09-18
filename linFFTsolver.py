@@ -3,6 +3,7 @@ import scipy.sparse.linalg as sp
 import itertools
 import time
 import sys
+import pandas as pd
 from multiprocessing import Pool, Process,Lock
 #from mayavi import mlab #scientific visualization library
 
@@ -307,3 +308,56 @@ if __name__=='__main__':
         homStiffness[5][i] = round((1.0/(N**3))*np.sum(sig[i][2][0]),4)
 
     print("Homogenized Stiffness: \n", homStiffness)
+    X=[]
+    Y=[]
+    Z=[]
+    #print(eps[0][0])
+    for i in range(N):
+        X.append(i)
+        Y.append(i)
+        Z.append(i)
+    e11=[]
+    e12=[]
+    e13=[]
+    e22=[]
+    e23=[]
+    e33=[]
+    s11=[]
+    s12=[]
+    s13=[]
+    s22=[]
+    s23=[]
+    s33=[]
+    pos=[]
+    for x in X:
+        for y in Y:
+            for z in Z:
+                e11.append(eps[0][0][0][x][y][z])
+                e12.append(eps[3][0][1][x][y][z])
+                e13.append(eps[5][0][2][x][y][z])
+                e22.append(eps[1][1][1][x][y][z])
+                e23.append(eps[4][1][2][x][y][z])
+                e33.append(eps[2][2][2][x][y][z])
+                s11.append(sig[0][0][0][x][y][z])
+                s12.append(sig[3][0][1][x][y][z])
+                s13.append(sig[5][0][2][x][y][z])
+                s22.append(sig[1][1][1][x][y][z])
+                s23.append(sig[4][1][2][x][y][z])
+                s33.append(sig[2][2][2][x][y][z])
+                pos.append([x,y,z])
+    print(e11)
+    Data = pd.DataFrame({"position": pos,
+                         "e11": e11,
+                         "e12": e12,
+                         "e13": e13,
+                         "e22": e22,
+                         "e23": e23,
+                         "e33": e33,
+                         "s11": s11,
+                         "s12": s12,
+                         "s13": s13,
+                         "s22": s22,
+                         "s23": s23,
+                         "s33": s33})
+    Data.to_csv("Data.csv",index=False)
+
